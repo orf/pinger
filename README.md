@@ -25,3 +25,8 @@ async fn main() {
     }
 }
 ```
+
+## Why?
+
+Sending ICMP messages across platforms is complicated and on some platforms this also requires root access to do.  
+Executing `ping` and parsing the output is a somewhat simple cross-platform way of doing this.
