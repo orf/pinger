@@ -58,16 +58,13 @@ pub trait Parser: Default {
     fn parse(&self, line: String) -> Option<PingResult>;
 
     fn extract_regex(&self, regex: &Regex, line: String) -> Option<PingResult> {
-        dbg!(&line);
         let cap = regex.captures(&line)?;
-        dbg!(&cap);
         let time = cap
             .name("time")
             .expect("No capture group named 'time'")
             .as_str()
             .parse::<f32>()
             .expect("time cannot be parsed as f32");
-        dbg!(&time);
         Some(PingResult::Pong(time))
     }
 }
