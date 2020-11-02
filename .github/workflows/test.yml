@@ -7,7 +7,7 @@ jobs:
     name: Run ping utility
     strategy:
       matrix:
-        os: [windows-latst, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout sources
