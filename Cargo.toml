@@ -1,0 +1,19 @@
+[package]
+name = "pinger"
+version = "0.1.0"
+authors = ["Tom Forbes <tom@tomforb.es>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "0.3.0", features = ["rt", "process", "macros", "io-std", "io-util"]}
+futures-core = "0.3.7"
+async-stream = "0.3.0"
+futures = "0.3.7"
+anyhow = "1.0.33"
+regex = "1.4.2"
+lazy_static = "1.4.0"
+os_info = "3.0.1"
+thiserror = "1.0.21"
+
