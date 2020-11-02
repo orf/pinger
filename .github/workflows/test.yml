@@ -5,7 +5,7 @@ name: Quickstart
 jobs:
   run_utility:
     name: Run ping utility
-    runs_on: [windows-latst, ubuntu-latest, macos-latest]
+    runs-on: [windows-latst, ubuntu-latest, macos-latest]
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
