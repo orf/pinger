@@ -3,6 +3,25 @@ on: [push, pull_request]
 name: Quickstart
 
 jobs:
+  run_utility:
+    name: Run ping utility
+    runs_on: [windows-latst, ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Run
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+
   check:
     name: Check
     runs-on: ubuntu-latest
