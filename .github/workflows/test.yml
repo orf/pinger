@@ -5,7 +5,10 @@ name: Run Tests
 jobs:
   run_utility:
     name: Run ping utility
-    runs-on: [windows-latst, ubuntu-latest, macos-latest]
+    strategy:
+      matrix:
+        os: [windows-latst, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2
