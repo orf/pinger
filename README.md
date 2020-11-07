@@ -11,22 +11,21 @@ This is a small Rust library to execute `ping` and parse the output across diffe
 ## Usage
 
 The `ping()` function is the main entrypoint to the library. It returns an asynchronous stream of `PingResult` values, 
-which can be either a `Timeout` or a `Pong(f32)`. Below is a simple `ping` implementation:
+which can be either a `Timeout` or a `Pong(Duration)`. Below is a simple `ping` implementation:
 
 ```rust
-use futures::pin_mut;
-use futures::StreamExt;
-use pinger::ping;
+use pinger::{ping, PingResult};
 
-#[tokio::main]
-async fn main() {
-    let stream = ping("tomforb.es".to_string())
-        .expect("Error pinging");
-    pin_mut!(stream);
-    while let Some(value) = stream.next().await {
-        println!("{:?}", value);
+fn main() {
+    let stream = ping("tomforb.es".to_string()).expect("Error pinging");
+    for message in stream {
+        match message {
+            PingResult::Pong(duration) => println!("{:?}", duration),
+            PingResult::Timeout => println!("Timeout!")
+        }
     }
 }
+
 ```
 
 ## Why?
