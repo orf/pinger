@@ -1,14 +1,12 @@
 use anyhow::Result;
-use async_stream::stream;
-use futures::stream::Stream;
 use os_info::Type;
 use regex::Regex;
-use std::pin::Pin;
-use std::process::Stdio;
-use thiserror::Error;
-use tokio::io::{AsyncBufReadExt, BufReader};
-use tokio::process::Command;
+use std::io::{BufRead, BufReader};
+use std::process::{Command, Stdio};
+use std::sync::mpsc;
+use std::thread;
 use std::time::Duration;
+use thiserror::Error;
 
 #[macro_use]
 extern crate lazy_static;
@@ -20,28 +18,38 @@ mod test;
 pub mod windows;
 
 pub trait Pinger: Default {
-    fn start<P>(&self, target: String) -> Result<Pin<Box<dyn Stream<Item = PingResult>>>>
+    fn start<P>(&self, target: String) -> Result<mpsc::Receiver<PingResult>>
     where
         P: Parser,
     {
-        let mut child = Command::new("ping")
-            .args(self.ping_args(target))
-            .stdout(Stdio::piped())
-            .stderr(Stdio::null())
-            .kill_on_drop(true)
-            .spawn()?;
+        let (tx, rx) = mpsc::channel();
+        let args = self.ping_args(target);
 
-        let stream = stream! {
+        thread::spawn(move || {
+            let mut child = Command::new("ping")
+                .args(args)
+                .stdout(Stdio::piped())
+                .stderr(Stdio::null())
+                .spawn()
+                .expect("Failed to run ping");
             let parser = P::default();
             let stdout = child.stdout.take().expect("child did not have a stdout");
-            let mut reader = BufReader::new(stdout).lines();
-            while let Some(line) = reader.next_line().await.expect("next_line() failed") {
-                if let Some(result) = parser.parse(line) {
-                    yield result;
+            let reader = BufReader::new(stdout).lines();
+            for line in reader {
+                match line {
+                    Ok(msg) => {
+                        if let Some(result) = parser.parse(msg) {
+                            if tx.send(result).is_err() {
+                                break;
+                            }
+                        }
+                    }
+                    Err(_) => break,
                 }
             }
-        };
-        Ok(Box::pin(stream))
+        });
+
+        Ok(rx)
     }
 
     fn ping_args(&self, target: String) -> Vec<String> {
@@ -66,7 +74,9 @@ pub trait Parser: Default {
             .as_str()
             .parse::<f32>()
             .expect("time cannot be parsed as f32");
-        Some(PingResult::Pong(Duration::from_micros((time * 100f32) as u64)))
+        Some(PingResult::Pong(Duration::from_micros(
+            (time * 100f32) as u64,
+        )))
     }
 }
 
@@ -82,7 +92,7 @@ pub enum PingError {
     UnsupportedOS(String),
 }
 
-pub fn ping(addr: String) -> Result<impl Stream<Item = PingResult>> {
+pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
     let os_type = os_info::get().os_type();
     match os_type {
         Type::Windows => {
