@@ -8,6 +8,7 @@ use std::process::Stdio;
 use thiserror::Error;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
+use std::time::Duration;
 
 #[macro_use]
 extern crate lazy_static;
@@ -65,13 +66,13 @@ pub trait Parser: Default {
             .as_str()
             .parse::<f32>()
             .expect("time cannot be parsed as f32");
-        Some(PingResult::Pong(time))
+        Some(PingResult::Pong(Duration::from_micros((time * 100f32) as u64)))
     }
 }
 
 #[derive(Debug)]
 pub enum PingResult {
-    Pong(f32),
+    Pong(Duration),
     Timeout,
 }
 
