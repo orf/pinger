@@ -5,8 +5,7 @@ authors = ["Tom Forbes <tom@tomforb.es>"]
 edition = "2018"
 license = "MIT"
 description = "A small cross-platform library to execute the ping command and parse the output"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+repository = "https://github.com/orf/pinger/"
 
 [dependencies]
 anyhow = "1.0.33"
