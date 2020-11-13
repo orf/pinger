@@ -99,7 +99,24 @@ pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
             let p = SimplePinger::default();
             p.start::<windows::WindowsParser>(addr)
         }
-        Type::Linux | Type::Debian | Type::Ubuntu | Type::Alpine => {
+        Type::Alpine
+        | Type::Amazon
+        | Type::Arch
+        | Type::CentOS
+        | Type::Debian
+        | Type::EndeavourOS
+        | Type::Fedora
+        | Type::Linux
+        | Type::Manjaro
+        | Type::Mint
+        | Type::openSUSE
+        | Type::OracleLinux
+        | Type::Redhat
+        | Type::RedHatEnterprise
+        | Type::SUSE
+        | Type::Ubuntu
+        | Type::Pop
+        | Type::Solus => {
             let p = linux::LinuxPinger::default();
             p.start::<linux::LinuxParser>(addr)
         }
