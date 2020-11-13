@@ -1,8 +1,65 @@
-use crate::{Parser, PingResult};
+use crate::{Parser, PingError, PingResult, Pinger};
+use anyhow::Result;
+use dns_lookup::lookup_host;
 use regex::Regex;
+use std::net::IpAddr;
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+use winping::{Buffer, Pinger as WinPinger};
 
 lazy_static! {
     static ref RE: Regex = Regex::new(r"(?ix-u)time=(?P<time>\d+(?:\.\d+)?)ms").unwrap();
+}
+
+#[derive(Default)]
+pub struct WindowsPinger {}
+
+impl Pinger for WindowsPinger {
+    fn start<P>(&self, target: String) -> Result<mpsc::Receiver<PingResult>>
+    where
+        P: Parser,
+    {
+        let parsed_ip: IpAddr = match target.parse() {
+            Err(_) => {
+                let things = lookup_host(target.as_str())?;
+                if things.is_empty() {
+                    Err(PingError::HostnameError(target))
+                } else {
+                    Ok(things[0])
+                }
+            }
+            Ok(addr) => Ok(addr),
+        }?;
+
+        let (tx, rx) = mpsc::channel();
+
+        thread::spawn(move || {
+            let pinger = WinPinger::new().expect("Failed to create a WinPinger instance");
+            let mut buffer = Buffer::new();
+            loop {
+                match pinger.send(parsed_ip.clone(), &mut buffer) {
+                    Ok(rtt) => {
+                        if tx
+                            .send(PingResult::Pong(Duration::from_millis(rtt as u64)))
+                            .is_err()
+                        {
+                            break;
+                        }
+                    }
+                    Err(_) => {
+                        // Fuck it. All errors are timeouts. Why not.
+                        if tx.send(PingResult::Timeout).is_err() {
+                            break;
+                        }
+                    }
+                }
+                thread::sleep(Duration::from_millis(200));
+            }
+        });
+
+        Ok(rx)
+    }
 }
 
 #[derive(Default)]
