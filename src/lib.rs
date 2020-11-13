@@ -75,7 +75,7 @@ pub trait Parser: Default {
             .parse::<f32>()
             .expect("time cannot be parsed as f32");
         Some(PingResult::Pong(Duration::from_micros(
-            (time * 100f32) as u64,
+            (time * 1000f32) as u64,
         )))
     }
 }
@@ -99,8 +99,7 @@ pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
             let p = SimplePinger::default();
             p.start::<windows::WindowsParser>(addr)
         }
-        Type::Alpine
-        | Type::Amazon
+        Type::Amazon
         | Type::Arch
         | Type::CentOS
         | Type::Debian
