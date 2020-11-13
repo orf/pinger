@@ -1,4 +1,4 @@
-use crate::{Parser, PingResult};
+use crate::{Parser, PingResult, Pinger};
 use regex::Regex;
 
 lazy_static! {
@@ -12,6 +12,15 @@ lazy_static! {
     \s+time=(?:(?P<time>[0-9\.]+)\s+ms)  # capture time"
     )
     .unwrap();
+}
+
+#[derive(Default)]
+pub struct MacOSPinger {}
+
+impl Pinger for MacOSPinger {
+    fn ping_args(&self, target: String) -> Vec<String> {
+        vec!["-i0.2".to_string(), target]
+    }
 }
 
 #[derive(Default)]

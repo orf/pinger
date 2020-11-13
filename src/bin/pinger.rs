@@ -5,7 +5,7 @@ fn main() {
     for message in stream.iter().take(10) {
         match message {
             PingResult::Pong(duration) => println!("{:?}", duration),
-            PingResult::Timeout => println!("Timeout!")
+            PingResult::Timeout => println!("Timeout!"),
         }
     }
 }

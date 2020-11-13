@@ -8,7 +8,7 @@ impl Pinger for LinuxPinger {
     fn ping_args(&self, target: String) -> Vec<String> {
         // The -O flag ensures we "no answer yet" messages from ping
         // See https://superuser.com/questions/270083/linux-ping-show-time-out
-        vec!["-O".to_string(), target]
+        vec!["-O".to_string(), "-i0.2".to_string(), target]
     }
 }
 

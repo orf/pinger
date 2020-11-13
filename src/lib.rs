@@ -104,7 +104,7 @@ pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
             p.start::<linux::LinuxParser>(addr)
         }
         Type::Macos => {
-            let p = SimplePinger::default();
+            let p = macos::MacOSPinger::default();
             p.start::<macos::MacOSParser>(addr)
         }
         _ => Err(PingError::UnsupportedOS(os_type.to_string()).into()),
