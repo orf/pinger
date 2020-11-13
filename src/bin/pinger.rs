@@ -1,7 +1,10 @@
 use pinger::{ping, PingResult};
 
 fn main() {
-    let stream = ping("tomforb.es".to_string()).expect("Error pinging");
+    let host = std::env::args()
+        .nth(1)
+        .unwrap_or_else(|| String::from("tomforb.es"));
+    let stream = ping(host).expect("Error pinging");
     for message in stream.iter().take(10) {
         match message {
             PingResult::Pong(duration) => println!("{:?}", duration),

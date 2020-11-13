@@ -13,9 +13,11 @@ extern crate lazy_static;
 
 pub mod linux;
 pub mod macos;
+#[cfg(windows)]
+pub mod windows;
+
 #[cfg(test)]
 mod test;
-pub mod windows;
 
 pub trait Pinger: Default {
     fn start<P>(&self, target: String) -> Result<mpsc::Receiver<PingResult>>
@@ -90,13 +92,16 @@ pub enum PingResult {
 pub enum PingError {
     #[error("Unsupported OS {0}")]
     UnsupportedOS(String),
+    #[error("Invalid or unresolvable hostname {0}")]
+    HostnameError(String),
 }
 
 pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
     let os_type = os_info::get().os_type();
     match os_type {
+        #[cfg(windows)]
         Type::Windows => {
-            let p = SimplePinger::default();
+            let p = windows::WindowsPinger::default();
             p.start::<windows::WindowsParser>(addr)
         }
         Type::Amazon

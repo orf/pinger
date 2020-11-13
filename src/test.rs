@@ -2,6 +2,7 @@
 mod tests {
     use crate::linux::LinuxParser;
     use crate::macos::MacOSParser;
+    #[cfg(windows)]
     use crate::windows::WindowsParser;
     use crate::{Parser, PingResult};
 
@@ -19,9 +20,9 @@ mod tests {
 
         for (output, expected) in parsed.into_iter().zip(expected) {
             if let Some(value) = output {
-                assert_eq!(format!("{:?}", value), expected)
+                assert_eq!(format!("{:?}", value).trim(), expected.trim())
             } else {
-                assert_eq!("None", expected)
+                assert_eq!("None", expected.trim())
             }
         }
     }
@@ -36,6 +37,7 @@ mod tests {
         test_parser::<LinuxParser>(include_str!("tests/ubuntu.txt"));
     }
 
+    #[cfg(windows)]
     #[test]
     fn windows() {
         test_parser::<WindowsParser>(include_str!("tests/windows.txt"));
