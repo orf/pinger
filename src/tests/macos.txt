@@ -13,13 +13,13 @@ Request timeout for icmp_seq 21
 -----
 
 None
-Pong(14.621)
-Pong(33.898)
-Pong(17.305)
-Pong(24.235)
-Pong(15.242)
-Pong(16.639)
+Pong(14.621ms)
+Pong(33.898ms)
+Pong(17.305ms)
+Pong(24.235ms)
+Pong(15.242ms)
+Pong(16.639ms)
 Timeout
 Timeout
 Timeout
-Pong(16.943)
+Pong(16.943ms)

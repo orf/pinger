@@ -15,15 +15,15 @@ no answer yet for icmp_seq=9
 -----
 
 None
-Pong(25.1)
-Pong(19.4)
-Pong(14.9)
-Pong(22.8)
-Pong(13.9)
-Pong(77.6)
-Pong(158.0)
+Pong(25.1ms)
+Pong(19.4ms)
+Pong(14.9ms)
+Pong(22.8ms)
+Pong(13.9ms)
+Pong(77.6ms)
+Pong(158ms)
 Timeout
 Timeout
-Pong(357.0)
-Pong(85.2)
-Pong(17.8)
+Pong(357ms)
+Pong(85.2ms)
+Pong(17.8ms)

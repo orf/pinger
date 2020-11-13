@@ -10,10 +10,10 @@ Reply from 192.168.239.132: bytes=32 time=120ms TTL=124
 -----
 
 None
-Pong(101.0)
-Pong(100.0)
-Pong(120.0)
-Pong(120.0)
+Pong(101ms)
+Pong(100ms)
+Pong(120ms)
+Pong(120ms)
 Timeout
 Timeout
-Pong(120.0)
+Pong(120ms)
