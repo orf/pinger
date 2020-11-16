@@ -1,3 +1,6 @@
+/// Pinger
+/// This crate exposes a simple function to ping remote hosts across different operating systems.
+
 use anyhow::Result;
 use os_info::Type;
 use regex::Regex;
