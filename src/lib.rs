@@ -1,7 +1,7 @@
 /// Pinger
 /// This crate exposes a simple function to ping remote hosts across different operating systems.
 /// Example:
-/// ```
+/// ```no_run
 /// use pinger::{ping, PingResult};
 ///
 /// let stream = ping("tomforb.es".to_string()).expect("Error pinging");

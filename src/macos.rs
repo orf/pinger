@@ -3,13 +3,7 @@ use regex::Regex;
 
 lazy_static! {
     static ref RE: Regex = Regex::new(
-        r"(?ix-u)
-    \s?[0-9]*                            # Bytes of data
-    \sbytes\sfrom\s                      # bytes from
-    \d+\.\d+\.\d+\.\d+:
-    \s+icmp_seq=\d+                      # icmp_seq
-    \s+ttl=\d+                           # ttl
-    \s+time=(?:(?P<time>[0-9\.]+)\s+ms)  # capture time"
+        r"time=(?:(?P<time>[0-9\.]+)\s+ms)"
     )
     .unwrap();
 }
