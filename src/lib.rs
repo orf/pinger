@@ -32,6 +32,10 @@ pub trait Pinger: Default {
                 .args(args)
                 .stdout(Stdio::piped())
                 .stderr(Stdio::null())
+                // Required to ensure that the output is formatted in the way we expect, not
+                // using locale specific delimiters.
+                .env("LANG", "C")
+                .env("LC_ALL", "C")
                 .spawn()
                 .expect("Failed to run ping");
             let parser = P::default();
