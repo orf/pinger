@@ -1,5 +1,17 @@
 /// Pinger
 /// This crate exposes a simple function to ping remote hosts across different operating systems.
+/// Example:
+/// ```
+/// use pinger::{ping, PingResult};
+///
+/// let stream = ping("tomforb.es".to_string()).expect("Error pinging");
+/// for message in stream {
+///     match message {
+///         PingResult::Pong(duration) => println!("{:?}", duration),
+///         PingResult::Timeout => println!("Timeout!")
+///     }
+/// }
+/// ```
 
 use anyhow::Result;
 use os_info::Type;
@@ -103,6 +115,7 @@ pub enum PingError {
     HostnameError(String),
 }
 
+/// Start pinging a an address. The address can be either a hostname or an IP address.
 pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
     let os_type = os_info::get().os_type();
     match os_type {
