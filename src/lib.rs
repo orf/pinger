@@ -12,7 +12,6 @@
 ///     }
 /// }
 /// ```
-
 use anyhow::Result;
 use os_info::Type;
 use regex::Regex;
@@ -101,7 +100,7 @@ pub trait Parser: Default {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum PingResult {
     Pong(Duration),
     Timeout,
