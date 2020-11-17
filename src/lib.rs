@@ -12,7 +12,6 @@
 ///     }
 /// }
 /// ```
-
 use anyhow::Result;
 use os_info::Type;
 use regex::Regex;

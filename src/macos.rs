@@ -2,10 +2,7 @@ use crate::{Parser, PingResult, Pinger};
 use regex::Regex;
 
 lazy_static! {
-    static ref RE: Regex = Regex::new(
-        r"time=(?:(?P<time>[0-9\.]+)\s+ms)"
-    )
-    .unwrap();
+    static ref RE: Regex = Regex::new(r"time=(?:(?P<time>[0-9\.]+)\s+ms)").unwrap();
 }
 
 #[derive(Default)]
