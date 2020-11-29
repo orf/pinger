@@ -28,6 +28,7 @@ extern crate lazy_static;
 
 pub mod linux;
 pub mod macos;
+pub mod android;
 #[cfg(windows)]
 pub mod windows;
 
@@ -143,6 +144,10 @@ pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
         | Type::Solus => {
             let p = linux::LinuxPinger::default();
             p.start::<linux::LinuxParser>(addr)
+        }
+        Type::Android => {
+            let p = android::AndroidPinger::default();
+            p.start::<android::AndroidParser>(addr)
         }
         Type::Macos => {
             let p = macos::MacOSPinger::default();

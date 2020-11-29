@@ -5,6 +5,7 @@ mod tests {
     #[cfg(windows)]
     use crate::windows::WindowsParser;
     use crate::{Parser, PingResult};
+    use crate::android::AndroidParser;
 
     fn test_parser<T>(contents: &str)
     where
@@ -16,13 +17,13 @@ mod tests {
         let expected: Vec<&str> = test_file[1].trim().split("\n").collect();
         let parsed: Vec<Option<PingResult>> = input.map(|l| parser.parse(l.to_string())).collect();
 
-        assert_eq!(parsed.len(), expected.len());
+        assert_eq!(parsed.len(), expected.len(), "Parsed: {:?}, Expected: {:?}", &parsed, &expected);
 
-        for (output, expected) in parsed.into_iter().zip(expected) {
+        for (idx, (output, expected)) in parsed.into_iter().zip(expected).enumerate() {
             if let Some(value) = output {
-                assert_eq!(format!("{:?}", value).trim(), expected.trim())
+                assert_eq!(format!("{:?}", value).trim(), expected.trim(), "Failed at idx {}", idx)
             } else {
-                assert_eq!("None", expected.trim())
+                assert_eq!("None", expected.trim(), "Failed at idx {}", idx)
             }
         }
     }
@@ -41,5 +42,10 @@ mod tests {
     #[test]
     fn windows() {
         test_parser::<WindowsParser>(include_str!("tests/windows.txt"));
+    }
+
+    #[test]
+    fn android() {
+        test_parser::<AndroidParser>(include_str!("tests/android.txt"));
     }
 }
