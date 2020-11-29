@@ -13,12 +13,12 @@ rtt min/avg/max/mdev = 106.252/163.821/246.851/58.823 ms
 -----
 
 None
-Pong(106ms)
-Pong(142ms)
-Pong(244ms)
-Pong(120ms)
-Pong(122ms)
-Pong(246ms)
+106ms
+142ms
+244ms
+120ms
+122ms
+246ms
 None
 None
 None

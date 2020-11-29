@@ -23,7 +23,7 @@ impl Parser for MacOSParser {
             return None;
         }
         if line.starts_with("Request timeout") {
-            return Some(PingResult::Timeout);
+            return Some(PingResult::Timeout(line));
         }
         self.extract_regex(&RE, line)
     }

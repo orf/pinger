@@ -7,8 +7,9 @@ fn main() {
     let stream = ping(host).expect("Error pinging");
     for message in stream.iter().take(10) {
         match message {
-            PingResult::Pong(duration) => println!("{:?}", duration),
-            PingResult::Timeout => println!("Timeout!"),
+            PingResult::Pong(duration, line) => println!("{:?} (line: {})", duration, line),
+            PingResult::Timeout(_) => println!("Timeout!"),
+            PingResult::Unknown(line) => println!("Unknown line {}", line),
         }
     }
 }

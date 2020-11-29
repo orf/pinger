@@ -27,7 +27,7 @@ mod tests {
         for (idx, (output, expected)) in parsed.into_iter().zip(expected).enumerate() {
             if let Some(value) = output {
                 assert_eq!(
-                    format!("{:?}", value).trim(),
+                    format!("{}", value).trim(),
                     expected.trim(),
                     "Failed at idx {}",
                     idx

@@ -41,7 +41,10 @@ impl Pinger for WindowsPinger {
                 match pinger.send(parsed_ip.clone(), &mut buffer) {
                     Ok(rtt) => {
                         if tx
-                            .send(PingResult::Pong(Duration::from_millis(rtt as u64)))
+                            .send(PingResult::Pong(
+                                Duration::from_millis(rtt as u64),
+                                "".to_string(),
+                            ))
                             .is_err()
                         {
                             break;

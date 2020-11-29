@@ -20,8 +20,10 @@ fn main() {
     let stream = ping("tomforb.es".to_string()).expect("Error pinging");
     for message in stream {
         match message {
-            PingResult::Pong(duration) => println!("{:?}", duration),
-            PingResult::Timeout => println!("Timeout!")
+            PingResult::Pong(duration, _) => println!("{:?}", duration),
+            PingResult::Timeout(_) => println!("Timeout!"),
+            // Unknown lines, just ignore.
+            PingResult::Unknown(line) => ()
         }
     }
 }

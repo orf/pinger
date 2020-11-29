@@ -8,8 +8,8 @@ round-trip min/avg/max/stddev = 15.282/20.347/41.775/8.344 ms
 -----
 
 None
-Pong(21.308ms)
-Pong(15.769ms)
+21.308ms
+15.769ms
 None
 None
 None

@@ -24,7 +24,7 @@ impl Parser for LinuxParser {
         if line.starts_with("64 bytes from") {
             return self.extract_regex(&UBUNTU_RE, line);
         } else if line.starts_with("no answer yet") {
-            return Some(PingResult::Timeout);
+            return Some(PingResult::Timeout(line));
         }
         None
     }

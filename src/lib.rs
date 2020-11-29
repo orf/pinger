@@ -7,19 +7,21 @@
 /// let stream = ping("tomforb.es".to_string()).expect("Error pinging");
 /// for message in stream {
 ///     match message {
-///         PingResult::Pong(duration) => println!("{:?}", duration),
-///         PingResult::Timeout => println!("Timeout!")
+///         PingResult::Pong(duration, line) => println!("{:?} (line: {})", duration, line),
+///         PingResult::Timeout(_) => println!("Timeout!"),
+///         PingResult::Unknown(line) => println!("Unknown line: {}", line),
 ///     }
 /// }
 /// ```
 use anyhow::Result;
 use os_info::Type;
 use regex::Regex;
+use std::fmt::Formatter;
 use std::io::{BufRead, BufReader};
 use std::process::{Command, Stdio};
 use std::sync::mpsc;
-use std::thread;
 use std::time::Duration;
+use std::{fmt, thread};
 use thiserror::Error;
 
 #[macro_use]
@@ -94,16 +96,26 @@ pub trait Parser: Default {
             .as_str()
             .parse::<f32>()
             .expect("time cannot be parsed as f32");
-        Some(PingResult::Pong(Duration::from_micros(
-            (time * 1000f32) as u64,
-        )))
+        let duration = Duration::from_micros((time * 1000f32) as u64);
+        Some(PingResult::Pong(duration, line))
     }
 }
 
 #[derive(Debug)]
 pub enum PingResult {
-    Pong(Duration),
-    Timeout,
+    Pong(Duration, String),
+    Timeout(String),
+    Unknown(String),
+}
+
+impl fmt::Display for PingResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match &self {
+            PingResult::Pong(duration, _) => write!(f, "{:?}", duration),
+            PingResult::Timeout(_) => write!(f, "Timeout"),
+            PingResult::Unknown(_) => write!(f, "Unknown"),
+        }
+    }
 }
 
 #[derive(Error, Debug)]
