@@ -16,11 +16,22 @@ mod tests {
         let expected: Vec<&str> = test_file[1].trim().split("\n").collect();
         let parsed: Vec<Option<PingResult>> = input.map(|l| parser.parse(l.to_string())).collect();
 
-        assert_eq!(parsed.len(), expected.len(), "Parsed: {:?}, Expected: {:?}", &parsed, &expected);
+        assert_eq!(
+            parsed.len(),
+            expected.len(),
+            "Parsed: {:?}, Expected: {:?}",
+            &parsed,
+            &expected
+        );
 
         for (idx, (output, expected)) in parsed.into_iter().zip(expected).enumerate() {
             if let Some(value) = output {
-                assert_eq!(format!("{:?}", value).trim(), expected.trim(), "Failed at idx {}", idx)
+                assert_eq!(
+                    format!("{:?}", value).trim(),
+                    expected.trim(),
+                    "Failed at idx {}",
+                    idx
+                )
             } else {
                 assert_eq!("None", expected.trim(), "Failed at idx {}", idx)
             }
@@ -35,6 +46,11 @@ mod tests {
     #[test]
     fn ubuntu() {
         test_parser::<LinuxParser>(include_str!("tests/ubuntu.txt"));
+    }
+
+    #[test]
+    fn debian() {
+        test_parser::<LinuxParser>(include_str!("tests/debian.txt"));
     }
 
     #[cfg(windows)]
