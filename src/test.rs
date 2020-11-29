@@ -5,7 +5,6 @@ mod tests {
     #[cfg(windows)]
     use crate::windows::WindowsParser;
     use crate::{Parser, PingResult};
-    use crate::android::AndroidParser;
 
     fn test_parser<T>(contents: &str)
     where
@@ -46,6 +45,6 @@ mod tests {
 
     #[test]
     fn android() {
-        test_parser::<AndroidParser>(include_str!("tests/android.txt"));
+        test_parser::<LinuxParser>(include_str!("tests/android.txt"));
     }
 }
