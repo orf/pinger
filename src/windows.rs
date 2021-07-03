@@ -13,13 +13,16 @@ lazy_static! {
 }
 
 #[derive(Default)]
-pub struct WindowsPinger {}
+pub struct WindowsPinger {
+    interval: Duration,
+}
 
 impl Pinger for WindowsPinger {
     fn start<P>(&self, target: String) -> Result<mpsc::Receiver<PingResult>>
     where
         P: Parser,
     {
+        let interval = self.interval;
         let parsed_ip: IpAddr = match target.parse() {
             Err(_) => {
                 let things = lookup_host(target.as_str())?;
@@ -57,11 +60,15 @@ impl Pinger for WindowsPinger {
                         }
                     }
                 }
-                thread::sleep(Duration::from_millis(200));
+                thread::sleep(interval);
             }
         });
 
         Ok(rx)
+    }
+
+    fn set_interval(&mut self, interval: Duration) {
+        self.interval = interval;
     }
 }
 

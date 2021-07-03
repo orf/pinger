@@ -74,6 +74,8 @@ pub trait Pinger: Default {
         Ok(rx)
     }
 
+    fn set_interval(&mut self, interval: Duration);
+
     fn ping_args(&self, target: String) -> Vec<String> {
         return vec![target];
     }
@@ -83,7 +85,9 @@ pub trait Pinger: Default {
 #[derive(Default)]
 pub struct SimplePinger {}
 
-impl Pinger for SimplePinger {}
+impl Pinger for SimplePinger {
+    fn set_interval(&mut self, _interval: Duration) {}
+}
 
 pub trait Parser: Default {
     fn parse(&self, line: String) -> Option<PingResult>;
@@ -128,11 +132,17 @@ pub enum PingError {
 
 /// Start pinging a an address. The address can be either a hostname or an IP address.
 pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
+    ping_with_interval(addr, Duration::from_millis(200))
+}
+
+/// Start pinging a an address. The address can be either a hostname or an IP address.
+pub fn ping_with_interval(addr: String, interval: Duration) -> Result<mpsc::Receiver<PingResult>> {
     let os_type = os_info::get().os_type();
     match os_type {
         #[cfg(windows)]
         Type::Windows => {
-            let p = windows::WindowsPinger::default();
+            let mut p = windows::WindowsPinger::default();
+            p.set_interval(interval);
             p.start::<windows::WindowsParser>(addr)
         }
         Type::Amazon
@@ -153,11 +163,13 @@ pub fn ping(addr: String) -> Result<mpsc::Receiver<PingResult>> {
         | Type::Pop
         | Type::Solus
         | Type::Android => {
-            let p = linux::LinuxPinger::default();
+            let mut p = linux::LinuxPinger::default();
+            p.set_interval(interval);
             p.start::<linux::LinuxParser>(addr)
         }
         Type::Macos => {
-            let p = macos::MacOSPinger::default();
+            let mut p = macos::MacOSPinger::default();
+            p.set_interval(interval);
             p.start::<macos::MacOSParser>(addr)
         }
         _ => Err(PingError::UnsupportedOS(os_type.to_string()).into()),
