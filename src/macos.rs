@@ -1,16 +1,26 @@
 use crate::{Parser, PingResult, Pinger};
 use regex::Regex;
+use std::time::Duration;
 
 lazy_static! {
     static ref RE: Regex = Regex::new(r"time=(?:(?P<time>[0-9\.]+)\s+ms)").unwrap();
 }
 
 #[derive(Default)]
-pub struct MacOSPinger {}
+pub struct MacOSPinger {
+    interval: Duration,
+}
 
 impl Pinger for MacOSPinger {
     fn ping_args(&self, target: String) -> Vec<String> {
-        vec!["-i0.2".to_string(), target]
+        vec![
+            format!("-i{:.1}", self.interval.as_millis() as f32 / 1_000_f32),
+            target,
+        ]
+    }
+
+    fn set_interval(&mut self, interval: Duration) {
+        self.interval = interval;
     }
 }
 
