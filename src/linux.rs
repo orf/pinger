@@ -1,14 +1,25 @@
 use crate::{Parser, PingResult, Pinger};
 use regex::Regex;
+use std::time::Duration;
 
 #[derive(Default)]
-pub struct LinuxPinger {}
+pub struct LinuxPinger {
+    interval: Duration,
+}
 
 impl Pinger for LinuxPinger {
     fn ping_args(&self, target: String) -> Vec<String> {
         // The -O flag ensures we "no answer yet" messages from ping
         // See https://superuser.com/questions/270083/linux-ping-show-time-out
-        vec!["-O".to_string(), "-i0.2".to_string(), target]
+        vec![
+            "-O".to_string(),
+            format!("-i{:.1}", self.interval.as_millis() as f32 / 1_000_f32),
+            target,
+        ]
+    }
+
+    fn set_interval(&mut self, interval: Duration) {
+        self.interval = interval;
     }
 }
 
