@@ -105,7 +105,7 @@ pub trait Parser: Default {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum PingResult {
     Pong(Duration, String),
     Timeout(String),
